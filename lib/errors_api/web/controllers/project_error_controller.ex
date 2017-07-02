@@ -11,13 +11,27 @@ defmodule ErrorsApi.Web.ProjectErrorController do
     render(conn, "index.json", errors: errors)
   end
 
-  def create(conn, %{"project_id" => project_id, "project_error" => project_error_params}) do
+  def create(conn, %{
+    "project_id" => project_id,
+    "project_error" => project_error_params
+  }) do
     project_error_params = Map.put(project_error_params, "project_id", project_id)
-    with {:ok, %ProjectError{} = project_error} <- Projects.create_project_error(project_error_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", project_project_error_path(conn, :show, project_id, project_error))
-      |> render("show.json", project_error: project_error)
+
+    case Projects.create_or_get_project_error(project_id, project_error_params) do
+      {:ok, project_error} -> case Projects.create_or_inc_project_meta(project_error, project_error_params) do
+        {:ok, _project_meta} ->
+          project_error = ErrorsApi.Repo.preload(project_error, :meta)
+          conn
+          |> put_status(:created)
+          |> put_resp_header("location", project_project_error_path(conn, :show, project_id, project_error))
+          |> render("show.json", project_error: project_error)
+        _ -> conn
+            |> put_status(422)
+            |> render(ErrorsApi.Web.ErrorView, "422.json")
+      end
+    _ -> conn
+        |> put_status(422)
+        |> render(ErrorsApi.Web.ErrorView, "422.json")
     end
   end
 

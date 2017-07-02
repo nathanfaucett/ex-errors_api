@@ -10,9 +10,9 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
   @create_user_attrs %{email: "example@domain.com"}
   @create_project_attrs %{name: "some name"}
 
-  @create_attrs %{count: 42, stack_trace: "some stack_trace"}
-  @update_attrs %{count: 43, stack_trace: "some updated stack_trace"}
-  @invalid_attrs %{count: nil, stack_trace: nil}
+  @create_attrs %{stack_trace: "some stack_trace", meta: "some meta"}
+  @update_attrs %{stack_trace: "some updated stack_trace", meta: "some updated meta"}
+  @invalid_attrs %{stack_trace: nil, meta: nil}
 
   def fixture(project, :project_error) do
     {:ok, project_error} = Projects.create_project_error(
@@ -39,11 +39,22 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
 
   test "creates project_error and renders project_error when data is valid", %{conn: conn, project: project} do
     conn = post conn, project_project_error_path(conn, :create, project.id), project_error: @create_attrs
-    assert %{"id" => id} = json_response(conn, 201)["data"]
+    json_project_error = json_response(conn, 201)["data"];
+    id = json_project_error["id"];
+    meta_id = Enum.at(json_project_error["meta"], 0)["id"];
+
+    assert json_project_error == %{
+      "id" => id,
+      "project_id" => project.id,
+      "stack_trace" => "some stack_trace",
+      "meta" => [%{
+        "count" => 1,
+        "data" => "some meta",
+        "id" => meta_id,
+        "project_error_id" => id}] }
 
     project_error = Projects.get_project_error!(project.id, id)
     assert project_error.id == id
-    assert project_error.count == 42
     assert project_error.stack_trace == "some stack_trace"
   end
 
@@ -59,7 +70,6 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
 
     project_error = Projects.get_project_error!(project.id, id)
     assert project_error.id == id
-    assert project_error.count == 43
     assert project_error.stack_trace == "some updated stack_trace"
   end
 

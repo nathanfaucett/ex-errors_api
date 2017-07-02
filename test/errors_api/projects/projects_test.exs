@@ -9,7 +9,6 @@ defmodule ErrorsApi.ProjectsTest do
 
 
   def user_fixture(attrs \\ %{}) do
-
     Accounts.find_or_create_user!("github", Enum.into(attrs, @create_user_attrs))
   end
 
@@ -91,9 +90,9 @@ defmodule ErrorsApi.ProjectsTest do
   describe "errors" do
     alias ErrorsApi.Projects.ProjectError
 
-    @valid_attrs %{count: 42, stack_trace: "some stack_trace"}
-    @update_attrs %{count: 43, stack_trace: "some updated stack_trace"}
-    @invalid_attrs %{count: nil, stack_trace: nil}
+    @valid_attrs %{stack_trace: "some stack_trace"}
+    @update_attrs %{stack_trace: "some updated stack_trace"}
+    @invalid_attrs %{stack_trace: nil}
 
     setup do
       user = user_fixture()
@@ -113,18 +112,19 @@ defmodule ErrorsApi.ProjectsTest do
 
     test "list_errors/0 returns all errors", %{project: project} do
       project_error = project_error_fixture(project)
+        |> Repo.preload(:meta)
       assert Projects.list_errors(project.id) == [project_error]
     end
 
     test "get_project_error!/1 returns the project_error with given id", %{project: project} do
       project_error = project_error_fixture(project)
+        |> Repo.preload(:meta)
       assert Projects.get_project_error!(project.id, project_error.id) == project_error
     end
 
     test "create_project_error/1 with valid data creates a project_error", %{project: project} do
       assert {:ok, %ProjectError{} = project_error} = Projects.create_project_error(
         Map.put(@valid_attrs, :project_id, project.id))
-      assert project_error.count == 42
       assert project_error.stack_trace == "some stack_trace"
     end
 
@@ -136,12 +136,12 @@ defmodule ErrorsApi.ProjectsTest do
       project_error = project_error_fixture(project)
       assert {:ok, project_error} = Projects.update_project_error(project_error, @update_attrs)
       assert %ProjectError{} = project_error
-      assert project_error.count == 43
       assert project_error.stack_trace == "some updated stack_trace"
     end
 
     test "update_project_error/2 with invalid data returns error changeset", %{project: project} do
       project_error = project_error_fixture(project)
+        |> Repo.preload(:meta)
       assert {:error, %Ecto.Changeset{}} = Projects.update_project_error(project_error, @invalid_attrs)
       assert project_error == Projects.get_project_error!(project.id, project_error.id)
     end

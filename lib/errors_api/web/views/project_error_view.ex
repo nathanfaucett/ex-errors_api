@@ -12,7 +12,8 @@ defmodule ErrorsApi.Web.ProjectErrorView do
 
   def render("project_error.json", %{project_error: project_error}) do
     %{id: project_error.id,
-      count: project_error.count,
-      stack_trace: project_error.stack_trace}
+      project_id: project_error.project_id,
+      stack_trace: project_error.stack_trace,
+      meta: render_many(project_error.meta, ErrorsApi.Web.ProjectMetaView, "project_meta.json")}
   end
 end
