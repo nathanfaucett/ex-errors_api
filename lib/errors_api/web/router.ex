@@ -24,7 +24,9 @@ defmodule ErrorsApi.Web.Router do
 
     # Users
     get "/users/current_user", UsersController, :get_current_user
-    post "/users/complete_registration", UsersController, :complete_registration
+
+    # Projects
+    resources "/projects", ProjectController
 
   end
 end

@@ -8,14 +8,11 @@ defmodule ErrorsApi.Accounts.User do
 
     # REFERENCES
     has_many :accounts_oauth2, ErrorsApi.Accounts.OAuth2
-    has_one  :accounts_user_info, ErrorsApi.Accounts.UserInfo
-    has_many :user_roles, ErrorsApi.Accounts.UserRole
 
     # FIELDS
     field :email, :string
     field :username, :string
     field :token, :string
-    field :completed, :boolean
 
     # TIMESTAMPS
     timestamps()

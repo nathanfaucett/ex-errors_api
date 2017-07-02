@@ -35,11 +35,11 @@ defmodule ErrorsApi.Web.OAuth2Controller do
     access_token = Accounts.get_access_token(user)
 
     # add get_user by access_token
-    redirect(conn, external: "#{System.get_env("HT_FRONTEND_HOST")}/oauth2/#{access_token}")
+    redirect(conn, external: "#{System.get_env("FRONTEND_HOST")}/oauth2/#{access_token}")
   end
 
   def callback(conn, _params) do
-    redirect(conn, external: "#{System.get_env("HT_FRONTEND_HOST")}/oauth2_error")
+    redirect(conn, external: "#{System.get_env("FRONTEND_HOST")}/oauth2_error")
   end
 
   defp get_auth_url_for_provider("github"), do: Github.authorize_url!()

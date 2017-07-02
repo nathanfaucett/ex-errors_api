@@ -39,15 +39,15 @@ config :phoenix, :stacktrace_depth, 20
 
 config :oauth2,
   debug: true,
-  active_providers: ["github","google","facebook"],
-  github: [client_id: "99859fbf3e27f8a7e9ec",
-           client_secret: "25fee4067cfa8262302945f24a2e8b64eb48d551",
+  active_providers: ["github"],
+  github: [client_id: "18c3ebb231d63a77c602",
+           client_secret: "541feec95e99e36715f888f107b14149c6211dfa",
            redirect_uri: "http://localhost:4000/api/oauth2_services/github/callback"],
-  google: [client_id: "547127568525-5m1duqpabbkpr20jhs6mve69f82is9mp.apps.googleusercontent.com",
-           client_secret: "bpwT0hEquDcw5hordN8Ly_wp",
+  google: [client_id: "",
+           client_secret: "",
            redirect_uri: "http://localhost:4000/api/oauth2_services/google/callback"],
-  facebook: [client_id: "1685032221793323",
-           client_secret: "04587ad35b17271c2843e74223f36944",
+  facebook: [client_id: "",
+           client_secret: "",
            redirect_uri: "http://localhost:4000/api/oauth2_services/facebook/callback"]
 
 

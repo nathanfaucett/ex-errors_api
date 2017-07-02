@@ -3,6 +3,7 @@ defmodule NotesApi.Repo.Migrations.CreateNotesApi.Accounts.OAuth2 do
 
   def change do
     create table(:accounts_oauth2) do
+      
       add :provider, :string
       add :email, :string
       add :data, :text

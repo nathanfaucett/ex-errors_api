@@ -13,6 +13,10 @@ config :errors_api,
 config :errors_api, ErrorsApi.Web.Endpoint,
   default_locale: "en",
   supported_locales: ["en","de"],
+
+  api_user_token_header: "x-errors-user-token",
+  api_project_token_header: "x-errors-project-token",
+
   url: [host: "localhost"],
   secret_key_base: "lgurMFsqGejlkO2itvyXac/62wlN03VT7fR30DVArLKlajlltOnlTVW66B+Utg5p",
   render_errors: [view: ErrorsApi.Web.ErrorView, accepts: ~w(json)],

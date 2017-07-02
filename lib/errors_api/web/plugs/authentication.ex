@@ -2,6 +2,7 @@ defmodule ErrorsApi.Web.Plugs.Authentication do
   use Phoenix.Controller
 
   alias ErrorsApi.Accounts
+  alias ErrorsApi.Utils.Config
 
   import ErrorsApi.Web.Plugs.Helpers, only: [halt_execution: 3]
 
@@ -10,7 +11,7 @@ defmodule ErrorsApi.Web.Plugs.Authentication do
   def call(conn, _default) do
 
     # get access_token from the headers
-    access_token = Plug.Conn.get_req_header(conn, "x-notes-user-token")
+    access_token = Plug.Conn.get_req_header(conn, Config.app_get(:api_user_token_header))
                  |> List.first()
 
     # if access_token has not been set
