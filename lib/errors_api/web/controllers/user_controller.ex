@@ -1,4 +1,4 @@
-defmodule ErrorsApi.Web.UsersController do
+defmodule ErrorsApi.Web.UserController do
 
   use ErrorsApi.Web, :controller
 

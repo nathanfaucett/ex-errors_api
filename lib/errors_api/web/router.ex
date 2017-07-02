@@ -23,10 +23,12 @@ defmodule ErrorsApi.Web.Router do
     pipe_through :auth
 
     # Users
-    get "/users/current_user", UsersController, :get_current_user
+    get "/users/current_user", UserController, :get_current_user
 
     # Projects
-    resources "/projects", ProjectController
+    resources "/projects", ProjectController do
+      resources "/errors", ProjectErrorController
+    end
 
   end
 end

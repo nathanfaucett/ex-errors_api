@@ -1,4 +1,4 @@
-defmodule ErrorsApi.Web.UsersView do
+defmodule ErrorsApi.Web.UserView do
 
   use ErrorsApi.Web, :view
 

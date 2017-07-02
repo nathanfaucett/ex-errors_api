@@ -2,12 +2,13 @@ defmodule ErrorsApi.Web.ProjectControllerTest do
   use ErrorsApi.Web.ConnCase
 
   alias ErrorsApi.Utils.Config
+  alias ErrorsApi.Accounts
 
   alias ErrorsApi.Projects
   alias ErrorsApi.Projects.Project
-  alias ErrorsApi.Accounts
 
   @create_user_attrs %{email: "example@domain.com"}
+  
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}

@@ -42,9 +42,8 @@ defmodule ErrorsApi.Projects do
       ** (Ecto.NoResultsError)
 
   """
-  def get_project!(user_id, id) do
+  def get_project!(user_id, id), do:
     Repo.get_by!(Project, user_id: user_id, id: id)
-  end
 
   @doc """
   Creates a project.
@@ -129,5 +128,106 @@ defmodule ErrorsApi.Projects do
   """
   def change_project(%Project{} = project) do
     Project.changeset(project, %{})
+  end
+
+  alias ErrorsApi.Projects.ProjectError
+
+  @doc """
+  Returns the list of errors.
+
+  ## Examples
+
+      iex> list_errors()
+      [%ProjectError{}, ...]
+
+  """
+  def list_errors(project_id) do
+    query = from p in ProjectError,
+      where: p.project_id == ^project_id,
+      select: p
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Gets a single project_error.
+
+  Raises `Ecto.NoResultsError` if the Project error does not exist.
+
+  ## Examples
+
+      iex> get_project_error!(123)
+      %ProjectError{}
+
+      iex> get_project_error!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_project_error!(project_id, id), do:
+    Repo.get_by!(ProjectError, project_id: project_id, id: id)
+
+  @doc """
+  Creates a project_error.
+
+  ## Examples
+
+      iex> create_project_error(%{field: value})
+      {:ok, %ProjectError{}}
+
+      iex> create_project_error(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_project_error(attrs \\ %{}) do
+    %ProjectError{}
+    |> ProjectError.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a project_error.
+
+  ## Examples
+
+      iex> update_project_error(project_error, %{field: new_value})
+      {:ok, %ProjectError{}}
+
+      iex> update_project_error(project_error, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_project_error(%ProjectError{} = project_error, attrs) do
+    project_error
+    |> ProjectError.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ProjectError.
+
+  ## Examples
+
+      iex> delete_project_error(project_error)
+      {:ok, %ProjectError{}}
+
+      iex> delete_project_error(project_error)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_project_error(%ProjectError{} = project_error) do
+    Repo.delete(project_error)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking project_error changes.
+
+  ## Examples
+
+      iex> change_project_error(project_error)
+      %Ecto.Changeset{source: %ProjectError{}}
+
+  """
+  def change_project_error(%ProjectError{} = project_error) do
+    ProjectError.changeset(project_error, %{})
   end
 end
