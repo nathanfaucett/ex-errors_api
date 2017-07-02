@@ -9,6 +9,10 @@ defmodule ErrorsApi.Web.Router do
     plug ErrorsApi.Web.Plugs.Authentication
   end
 
+  pipeline :project_auth do
+    plug ErrorsApi.Web.Plugs.ProjectAuthentication
+  end
+
   scope "/api", ErrorsApi.Web do
     pipe_through :api
 
@@ -26,9 +30,12 @@ defmodule ErrorsApi.Web.Router do
     get "/users/current_user", UserController, :get_current_user
 
     # Projects
-    resources "/projects", ProjectController do
-      resources "/errors", ProjectErrorController
-    end
+    resources "/projects", ProjectController
+
+    pipe_through :project_auth
+
+    # Project Errors
+    resources "/project_errors", ProjectErrorController
 
   end
 end

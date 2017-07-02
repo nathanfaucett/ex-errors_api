@@ -6,15 +6,14 @@ defmodule ErrorsApi.Web.ProjectErrorController do
 
   action_fallback ErrorsApi.Web.FallbackController
 
-  def index(conn, %{"project_id" => project_id}) do
+  def index(conn, %{}) do
+    project_id = conn.assigns[:current_project].id
     errors = Projects.list_errors(project_id)
     render(conn, "index.json", errors: errors)
   end
 
-  def create(conn, %{
-    "project_id" => project_id,
-    "project_error" => project_error_params
-  }) do
+  def create(conn, %{"project_error" => project_error_params}) do
+    project_id = conn.assigns[:current_project].id
     project_error_params = Map.put(project_error_params, "project_id", project_id)
 
     case Projects.create_or_get_project_error(project_id, project_error_params) do
@@ -23,7 +22,7 @@ defmodule ErrorsApi.Web.ProjectErrorController do
           project_error = ErrorsApi.Repo.preload(project_error, :meta)
           conn
           |> put_status(:created)
-          |> put_resp_header("location", project_project_error_path(conn, :show, project_id, project_error))
+          |> put_resp_header("location", project_error_path(conn, :show, project_error))
           |> render("show.json", project_error: project_error)
         _ -> conn
             |> put_status(422)
@@ -35,12 +34,14 @@ defmodule ErrorsApi.Web.ProjectErrorController do
     end
   end
 
-  def show(conn, %{"project_id" => project_id, "id" => id}) do
+  def show(conn, %{"id" => id}) do
+    project_id = conn.assigns[:current_project].id
     project_error = Projects.get_project_error!(project_id, id)
     render(conn, "show.json", project_error: project_error)
   end
 
-  def update(conn, %{"project_id" => project_id, "id" => id, "project_error" => project_error_params}) do
+  def update(conn, %{"id" => id, "project_error" => project_error_params}) do
+    project_id = conn.assigns[:current_project].id
     project_error = Projects.get_project_error!(project_id, id)
 
     with {:ok, %ProjectError{} = project_error} <- Projects.update_project_error(project_error, project_error_params) do
@@ -48,7 +49,8 @@ defmodule ErrorsApi.Web.ProjectErrorController do
     end
   end
 
-  def delete(conn, %{"project_id" => project_id, "id" => id}) do
+  def delete(conn, %{"id" => id}) do
+    project_id = conn.assigns[:current_project].id
     project_error = Projects.get_project_error!(project_id, id)
     with {:ok, %ProjectError{}} <- Projects.delete_project_error(project_error) do
       send_resp(conn, :no_content, "")

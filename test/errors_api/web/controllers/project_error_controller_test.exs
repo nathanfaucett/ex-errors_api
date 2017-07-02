@@ -29,16 +29,17 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
       project: project,
       conn: conn
         |> put_req_header(Config.app_get(:api_user_token_header), user.token)
+        |> put_req_header(Config.app_get(:api_project_token_header), project.token)
         |> put_req_header("accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn, project: project} do
-    conn = get conn, project_project_error_path(conn, :index, project.id)
+  test "lists all entries on index", %{conn: conn} do
+    conn = get conn, project_error_path(conn, :index)
     assert json_response(conn, 200)["data"] == []
   end
 
   test "creates project_error and renders project_error when data is valid", %{conn: conn, project: project} do
-    conn = post conn, project_project_error_path(conn, :create, project.id), project_error: @create_attrs
+    conn = post conn, project_error_path(conn, :create), project_error: @create_attrs
     json_project_error = json_response(conn, 201)["data"];
     id = json_project_error["id"];
     meta_id = Enum.at(json_project_error["meta"], 0)["id"];
@@ -58,14 +59,14 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
     assert project_error.stack_trace == "some stack_trace"
   end
 
-  test "does not create project_error and renders errors when data is invalid", %{conn: conn, project: project} do
-    conn = post conn, project_project_error_path(conn, :create, project.id), project_error: @invalid_attrs
+  test "does not create project_error and renders errors when data is invalid", %{conn: conn} do
+    conn = post conn, project_error_path(conn, :create), project_error: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "updates chosen project_error and renders project_error when data is valid", %{conn: conn, project: project} do
     %ProjectError{id: id} = project_error = fixture(project, :project_error)
-    conn = put conn, project_project_error_path(conn, :update, project.id, project_error), project_error: @update_attrs
+    conn = put conn, project_error_path(conn, :update, project_error), project_error: @update_attrs
     assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
     project_error = Projects.get_project_error!(project.id, id)
@@ -75,13 +76,13 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
 
   test "does not update chosen project_error and renders errors when data is invalid", %{conn: conn, project: project} do
     project_error = fixture(project, :project_error)
-    conn = put conn, project_project_error_path(conn, :update, project.id, project_error), project_error: @invalid_attrs
+    conn = put conn, project_error_path(conn, :update, project_error), project_error: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "deletes chosen project_error", %{conn: conn, project: project} do
     project_error = fixture(project, :project_error)
-    conn = delete conn, project_project_error_path(conn, :delete, project.id, project_error)
+    conn = delete conn, project_error_path(conn, :delete, project_error)
     assert response(conn, 204)
     assert_raise Ecto.NoResultsError, fn -> Projects.get_project_error!(project.id, project_error.id) end
   end

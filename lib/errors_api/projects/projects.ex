@@ -45,6 +45,9 @@ defmodule ErrorsApi.Projects do
   def get_project!(user_id, id), do:
     Repo.get_by!(Project, user_id: user_id, id: id)
 
+  def get_project_by_user_and_token(user_id, token), do:
+    Repo.get_by!(Project, user_id: user_id, token: token)
+
   @doc """
   Creates a project.
 
