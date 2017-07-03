@@ -10,9 +10,6 @@ defmodule ErrorsApi.Utils.FormData do
   def language_code?(code),
     do: !is_nil(Enum.find(language_codes(), fn(k) -> k.code == code end))
 
-  def learning_disability?(disability),
-    do: !is_nil(Enum.find(learning_disabilities(), fn(k) -> k.key == disability end))
-
   def language_codes_validation_list(),
     do: Enum.map(language_codes(), fn(v) -> v.code end)
 
@@ -204,16 +201,5 @@ defmodule ErrorsApi.Utils.FormData do
       %{ code: "zu", name: "Zulu" }
     ]
   end
-
-  def learning_disabilities() do
-    [
-      %{ name: "Dyslexia", key: "dyslexia" },
-      %{ name: "Attention Deficit/Hyperactivity Disorder (ADHD)", key: "adhd" },
-      %{ name: "Dyscalculia", key: "dyscalculia" },
-      %{ name: "Dysgraphia", key: "dysgraphia" }
-    ]
-  end
-  def learning_disabilities_validation_list(),
-    do: Enum.map(learning_disabilities(), fn(v) -> v.key end)
 
 end

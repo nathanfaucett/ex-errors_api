@@ -17,3 +17,15 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+## ENV
+
+```bash
+export HOST="localhost"
+
+export PORT=4000
+export SSL_PORT=4001
+
+export SSL_KEY_PATH="/etc/ssl/private/nginx-selfsigned.key"
+export SSL_CERT_PATH="/etc/ssl/certs/nginx-selfsigned.crt"
+```

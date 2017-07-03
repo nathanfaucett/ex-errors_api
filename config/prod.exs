@@ -16,13 +16,17 @@ use Mix.Config
 
 # Configures the endpoint
 config :errors_api, ErrorsApi.Web.Endpoint,
-  http: [port: {:system, "PORT"}],
-  url: [host: {:system, "HOST"}],
-  root: ".",
+  url: [host: {:system, "HOST"}, port: {:system, "SSL_PORT"}],
+  https: [:inet6,
+          port: {:system, "SSL_PORT"},
+          otp_app: :errors_api,
+          keyfile: "priv/keys/api.errors.hackertarian.com.key",
+          certfile: "priv/keys/api.errors.hackertarian.com.cert"],
+  force_ssl: [hsts: true],
   server: true,
   version: Mix.Project.config[:version],
-  on_init: {ErrorsApi.Web.Endpoint, :load_from_system_env, []},
-  frontend_origin: "https://errors.hackertarian.com"
+  frontend_origin: "https://errors.hackertarian.com",
+  on_init: {ErrorsApi.Web.Endpoint, :load_from_system_env, []}
 
 config :cors_plug,
   headers: [

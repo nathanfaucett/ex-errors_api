@@ -3,6 +3,8 @@
 /db
 /deps
 /*.ez
+/priv/keys
+/.envrc
 
 # Generated on crash by the VM
 erl_crash.dump
