@@ -11,6 +11,7 @@ defmodule ErrorsApi.Projects.ProjectError do
     has_many :meta, ErrorsApi.Projects.ProjectMeta
 
     # FIELDS
+    field :name, :string
     field :stack_trace, :string
 
     timestamps()
@@ -19,8 +20,8 @@ defmodule ErrorsApi.Projects.ProjectError do
   @doc false
   def changeset(%ProjectError{} = project_error, attrs) do
     project_error
-    |> cast(attrs, [:stack_trace, :project_id])
+    |> cast(attrs, [:name, :stack_trace, :project_id])
     |> foreign_key_constraint(:project_id)
-    |> validate_required([:stack_trace, :project_id])
+    |> validate_required([:name, :stack_trace, :project_id])
   end
 end

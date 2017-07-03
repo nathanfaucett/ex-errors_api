@@ -9,8 +9,8 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
   @create_user_attrs %{email: "example@domain.com"}
   @create_project_attrs %{name: "some name"}
 
-  @create_attrs %{stack_trace: "some stack_trace", meta: "some meta"}
-  @invalid_attrs %{stack_trace: nil, meta: nil}
+  @create_attrs %{name: "some name", stack_trace: "some stack_trace", meta: "some meta"}
+  @invalid_attrs %{name: nil, stack_trace: nil, meta: nil}
 
   def fixture(project, :project_error) do
     {:ok, project_error} = Projects.create_project_error(

@@ -5,6 +5,7 @@ defmodule ErrorsApi.Repo.Migrations.CreateErrorsApi.Projects.ProjectError do
     create table(:projects_errors) do
 
       add :project_id, references(:projects_projects, on_delete: :nothing, null: false)
+      add :name, :string
       add :stack_trace, :string
 
       timestamps()

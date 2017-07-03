@@ -176,6 +176,30 @@ defmodule ErrorsApi.Projects do
 
   ## Examples
 
+      iex> create_or_get_project_error_and_meta(project_id, %{field: value})
+      {:ok, %ProjectError{}}
+
+      iex> create_or_get_project_error_and_meta(project_id, %{field: bad_value})
+      {:error, nil}
+
+  """
+  def create_or_get_project_error_and_meta(project_id, attrs \\ %{}) do
+    case create_or_get_project_error(project_id, attrs) do
+      {:ok, project_error} ->
+        case create_or_inc_project_meta(project_error, attrs) do
+          {:ok, _project_meta} ->
+            {:ok, Repo.preload(project_error, :meta)}
+          _ -> {:error, nil}
+        end
+    _ -> {:error, nil}
+    end
+  end
+
+  @doc """
+  Get or creates a project_error.
+
+  ## Examples
+
       iex> get_or_create_project_error(%{field: value})
       {:ok, %ProjectError{}}
 
@@ -184,12 +208,19 @@ defmodule ErrorsApi.Projects do
 
   """
   def create_or_get_project_error(project_id, attrs \\ %{}) do
+    name = Map.get(attrs, "name", Map.get(attrs, :name))
     stack_trace = Map.get(attrs, "stack_trace", Map.get(attrs, :stack_trace))
 
-    if stack_trace != nil do
-      case Repo.get_by(ProjectError, project_id: project_id, stack_trace: stack_trace) do
-        nil -> create_project_error(attrs)
-        project_error -> project_error
+    if name != nil and stack_trace != nil do
+      case Repo.get_by(ProjectError, project_id: project_id, name: name, stack_trace: stack_trace) do
+        nil ->
+          create_project_error(%{
+            project_id: project_id,
+            name: name,
+            stack_trace: stack_trace
+          })
+        project_error ->
+          project_error
       end
     else
       {:error, nil}

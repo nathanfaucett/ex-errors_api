@@ -90,9 +90,8 @@ defmodule ErrorsApi.ProjectsTest do
   describe "errors" do
     alias ErrorsApi.Projects.ProjectError
 
-    @valid_attrs %{stack_trace: "some stack_trace"}
-    @update_attrs %{stack_trace: "some updated stack_trace"}
-    @invalid_attrs %{stack_trace: nil}
+    @valid_attrs %{name: "some name", stack_trace: "some stack_trace"}
+    @invalid_attrs %{name: nil, stack_trace: nil}
 
     setup do
       user = user_fixture()
@@ -130,13 +129,6 @@ defmodule ErrorsApi.ProjectsTest do
 
     test "create_project_error/1 with invalid data returns error changeset", %{} do
       assert {:error, %Ecto.Changeset{}} = Projects.create_project_error(@invalid_attrs)
-    end
-
-    test "update_project_error/2 with valid data updates the project_error", %{project: project} do
-      project_error = project_error_fixture(project)
-      assert {:ok, project_error} = Projects.update_project_error(project_error, @update_attrs)
-      assert %ProjectError{} = project_error
-      assert project_error.stack_trace == "some updated stack_trace"
     end
 
     test "update_project_error/2 with invalid data returns error changeset", %{project: project} do
