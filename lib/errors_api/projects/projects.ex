@@ -2,6 +2,7 @@ defmodule ErrorsApi.Projects do
   @moduledoc """
   The boundary for the Projects system.
   """
+  use ErrorsApi.Web, :view
 
   import Ecto.Query, warn: false
   import Ecto.Changeset
@@ -10,6 +11,7 @@ defmodule ErrorsApi.Projects do
   alias ErrorsApi.Utils.Crypto
 
   alias ErrorsApi.Projects.Project
+  alias ErrorsApi.Projects.ProjectError
 
   @doc """
   Returns the list of projects.
@@ -26,6 +28,31 @@ defmodule ErrorsApi.Projects do
       select: p
 
     Repo.all(query)
+  end
+
+  def project_error_request(%Project{} = project, %ProjectError{} = project_error, is_new) do
+    new_called = if is_new do
+      project_request(project, project_error, project.new_error_callback)
+    end
+    if !new_called do
+      project_request(project, project_error, project.error_callback)
+    end
+  end
+
+  defp project_request(%Project{} = project, %ProjectError{} = project_error, url) do
+    if url != nil do
+      project_json = render_one(project, ErrorsApi.Web.ProjectView, "secure_project.json")
+      project_error_json = render_one(project_error, ErrorsApi.Web.ProjectErrorView, "secure_project_error.json")
+      json = Poison.encode!(%{
+          project: project_json,
+          error: project_error_json
+      })
+
+      HTTPoison.post(url, json, [{"Content-Type", "application/json"}])
+      true
+    else
+      false
+    end
   end
 
   @doc """
@@ -185,13 +212,13 @@ defmodule ErrorsApi.Projects do
   """
   def create_or_get_project_error_and_meta(project_id, attrs \\ %{}) do
     case create_or_get_project_error(project_id, attrs) do
-      {:ok, project_error} ->
+      {:ok, is_new, project_error} ->
         case create_or_inc_project_meta(project_error, attrs) do
           {:ok, _project_meta} ->
-            {:ok, Repo.preload(project_error, :meta)}
-          _ -> {:error, nil}
+            {:ok, is_new, Repo.preload(project_error, :meta)}
+          _ -> {:error, false, nil}
         end
-    _ -> {:error, nil}
+    _ -> {:error, false, nil}
     end
   end
 
@@ -214,16 +241,17 @@ defmodule ErrorsApi.Projects do
     if name != nil and stack_trace != nil do
       case Repo.get_by(ProjectError, project_id: project_id, name: name, stack_trace: stack_trace) do
         nil ->
-          create_project_error(%{
+          {status, value} = create_project_error(%{
             project_id: project_id,
             name: name,
             stack_trace: stack_trace
           })
-        project_error ->
-          project_error
+          {status, true, value}
+        {:ok, project_error} ->
+          {:ok, false, project_error}
       end
     else
-      {:error, nil}
+      {:error, false, nil}
     end
   end
 

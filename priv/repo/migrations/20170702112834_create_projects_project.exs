@@ -8,6 +8,9 @@ defmodule ErrorsApi.Repo.Migrations.CreateErrorsApi.Projects.Project do
       add :name, :string
       add :token, :string
 
+      add :error_callback, :string
+      add :new_error_callback, :string
+
       timestamps()
     end
 

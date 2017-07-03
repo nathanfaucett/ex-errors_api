@@ -7,7 +7,7 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
   alias ErrorsApi.Projects
 
   @create_user_attrs %{email: "example@domain.com"}
-  @create_project_attrs %{name: "some name"}
+  @create_project_attrs %{name: "some name", error_callback: "http://localhost:9999/errors"}
 
   @create_attrs %{name: "some name", stack_trace: "some stack_trace", meta: "some meta"}
   @invalid_attrs %{name: nil, stack_trace: nil, meta: nil}

@@ -16,4 +16,9 @@ defmodule ErrorsApi.Web.ProjectView do
       name: project.name,
       token: project.token}
   end
+
+  def render("secure_project.json", %{project: project}) do
+    %{id: project.id,
+      name: project.name}
+  end
 end

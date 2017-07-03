@@ -16,4 +16,10 @@ defmodule ErrorsApi.Web.ProjectMetaView do
       count: project_meta.count,
       data: project_meta.meta}
   end
+
+  def render("secure_project_meta.json", %{project_meta: project_meta}) do
+    %{id: project_meta.id,
+      count: project_meta.count,
+      data: project_meta.meta}
+  end
 end
