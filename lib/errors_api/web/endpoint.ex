@@ -1,6 +1,8 @@
 defmodule ErrorsApi.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :errors_api
 
+  alias ErrorsApi.Utils.Config
+
   socket "/socket", ErrorsApi.Web.UserSocket
 
   # Code reloading can be explicitly enabled under the
@@ -21,12 +23,7 @@ defmodule ErrorsApi.Web.Endpoint do
   plug Plug.Head
 
   # Cors
-  plug CORSPlug, headers: [
-    "Authorization", "Content-Type", "Accept", "Origin",
-    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
-    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
-    "X-CSRF-Token", "X-Errors-User-Token"
-  ]
+  plug CORSPlug, origin: [Config.app_get(:frontend_origin)]
   plug ErrorsApi.Web.Router
 
   @doc """

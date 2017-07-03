@@ -11,7 +11,15 @@ config :errors_api, ErrorsApi.Web.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
+  watchers: [],
+  frontend_origin: "http://localhost:8080"
+
+config :cors_plug,
+  headers: [
+    "Authorization", "Content-Type", "Accept", "Origin",
+    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
+    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
+    "X-CSRF-Token", "X-Errors-User-Token"]
 
 # ## SSL Support
 #
@@ -37,18 +45,7 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 
-config :oauth2,
-  debug: true,
-  active_providers: ["github"],
-  github: [client_id: "18c3ebb231d63a77c602",
-           client_secret: "541feec95e99e36715f888f107b14149c6211dfa",
-           redirect_uri: "http://localhost:4000/api/oauth2_services/github/callback"],
-  google: [client_id: "",
-           client_secret: "",
-           redirect_uri: "http://localhost:4000/api/oauth2_services/google/callback"],
-  facebook: [client_id: "",
-           client_secret: "",
-           redirect_uri: "http://localhost:4000/api/oauth2_services/facebook/callback"]
+import_config "dev.secret.exs"
 
 
 # Configure your database

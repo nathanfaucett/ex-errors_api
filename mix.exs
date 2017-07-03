@@ -17,7 +17,7 @@ defmodule ErrorsApi.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {ErrorsApi.Application, []},
-     extra_applications: [:logger, :runtime_tools, :httpoison]]
+     extra_applications: [:logger, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,7 +37,8 @@ defmodule ErrorsApi.Mixfile do
      {:oauth2, "~> 0.9"},
      {:cors_plug, "~> 1.2"},
      {:cowboy, "~> 1.0"},
-     {:httpoison, "~> 0.12"}]
+     {:httpoison, "~> 0.12"},
+     {:distillery, "~> 1.4"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

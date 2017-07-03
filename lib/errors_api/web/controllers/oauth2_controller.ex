@@ -2,6 +2,7 @@ defmodule ErrorsApi.Web.OAuth2Controller do
 
   use ErrorsApi.Web, :controller
 
+  alias ErrorsApi.Utils.Config
   alias ErrorsApi.Web.OAuth2.Github, as: Github
   alias ErrorsApi.Web.OAuth2.Google, as: Google
   alias ErrorsApi.Web.OAuth2.Facebook, as: Facebook
@@ -35,11 +36,11 @@ defmodule ErrorsApi.Web.OAuth2Controller do
     access_token = Accounts.get_access_token(user)
 
     # add get_user by access_token
-    redirect(conn, external: "#{System.get_env("FRONTEND_HOST")}/oauth2/#{access_token}")
+    redirect(conn, external: "#{Config.app_get(:frontend_origin)}/#/oauth2/#{access_token}")
   end
 
   def callback(conn, _params) do
-    redirect(conn, external: "#{System.get_env("FRONTEND_HOST")}/oauth2_error")
+    redirect(conn, external: "#{Config.app_get(:frontend_origin)}/#/oauth2_error")
   end
 
   defp get_auth_url_for_provider("github"), do: Github.authorize_url!()

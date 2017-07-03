@@ -4,7 +4,15 @@ use Mix.Config
 # you can enable the server option below.
 config :errors_api, ErrorsApi.Web.Endpoint,
   http: [port: 4001],
-  server: false
+  server: false,
+  frontend_origin: "http://localhost:8080"
+
+config :cors_plug,
+  headers: [
+    "Authorization", "Content-Type", "Accept", "Origin",
+    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
+    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
+    "X-CSRF-Token", "X-Errors-User-Token"]
 
 # Print only warnings and errors during test
 config :logger, level: :warn
