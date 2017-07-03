@@ -30,12 +30,14 @@ defmodule ErrorsApi.Web.Router do
     get "/users/current_user", UserController, :get_current_user
 
     # Projects
-    resources "/projects", ProjectController
-
-    pipe_through :project_auth
+    resources "/projects", ProjectController, only: [:index, :show, :create, :update, :delete] do
+      patch "/regenerate_token", ProjectController, :regenerate_token
+      resources "/errors", ProjectErrorController, only: [:index, :show, :delete]
+    end
 
     # Project Errors
-    resources "/project_errors", ProjectErrorController
+    pipe_through :project_auth
+    post "/project_errors", ProjectErrorController, :create
 
   end
 end

@@ -5,13 +5,11 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
   alias ErrorsApi.Accounts
 
   alias ErrorsApi.Projects
-  alias ErrorsApi.Projects.ProjectError
 
   @create_user_attrs %{email: "example@domain.com"}
   @create_project_attrs %{name: "some name"}
 
   @create_attrs %{stack_trace: "some stack_trace", meta: "some meta"}
-  @update_attrs %{stack_trace: "some updated stack_trace", meta: "some updated meta"}
   @invalid_attrs %{stack_trace: nil, meta: nil}
 
   def fixture(project, :project_error) do
@@ -33,8 +31,8 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
         |> put_req_header("accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn} do
-    conn = get conn, project_error_path(conn, :index)
+  test "lists all entries on index", %{conn: conn, project: project} do
+    conn = get conn, project_project_error_path(conn, :index, project.id)
     assert json_response(conn, 200)["data"] == []
   end
 
@@ -64,25 +62,9 @@ defmodule ErrorsApi.Web.ProjectErrorControllerTest do
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "updates chosen project_error and renders project_error when data is valid", %{conn: conn, project: project} do
-    %ProjectError{id: id} = project_error = fixture(project, :project_error)
-    conn = put conn, project_error_path(conn, :update, project_error), project_error: @update_attrs
-    assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-    project_error = Projects.get_project_error!(project.id, id)
-    assert project_error.id == id
-    assert project_error.stack_trace == "some updated stack_trace"
-  end
-
-  test "does not update chosen project_error and renders errors when data is invalid", %{conn: conn, project: project} do
-    project_error = fixture(project, :project_error)
-    conn = put conn, project_error_path(conn, :update, project_error), project_error: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
-
   test "deletes chosen project_error", %{conn: conn, project: project} do
     project_error = fixture(project, :project_error)
-    conn = delete conn, project_error_path(conn, :delete, project_error)
+    conn = delete conn, project_project_error_path(conn, :delete, project.id, project_error)
     assert response(conn, 204)
     assert_raise Ecto.NoResultsError, fn -> Projects.get_project_error!(project.id, project_error.id) end
   end
