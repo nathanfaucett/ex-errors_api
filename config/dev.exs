@@ -7,19 +7,12 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :errors_api, ErrorsApi.Web.Endpoint,
-  http: [port: {:system, "PORT"}],
+  http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: [],
   frontend_origin: "http://localhost:8080"
-
-config :cors_plug,
-  headers: [
-    "Authorization", "Content-Type", "Accept", "Origin",
-    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
-    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
-    "X-CSRF-Token", "X-Errors-User-Token"]
 
 # ## SSL Support
 #
@@ -51,8 +44,8 @@ import_config "dev.secret.exs"
 # Configure your database
 config :errors_api, ErrorsApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "dev",
-  password: "dev",
+  username: "postgres",
+  password: "postgres",
   database: "errors_api_dev",
   hostname: "localhost",
   pool_size: 10

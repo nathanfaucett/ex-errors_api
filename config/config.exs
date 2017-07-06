@@ -15,6 +15,7 @@ config :errors_api, ErrorsApi.Web.Endpoint,
   supported_locales: ["en","de"],
 
   api_user_token_header: "x-errors-user-token",
+  api_user_locale_header: "x-errors-user-locale",
   api_project_token_header: "x-errors-project-token",
 
   url: [host: "localhost"],
@@ -22,6 +23,13 @@ config :errors_api, ErrorsApi.Web.Endpoint,
   render_errors: [view: ErrorsApi.Web.ErrorView, accepts: ~w(json)],
   pubsub: [name: ErrorsApi.PubSub,
            adapter: Phoenix.PubSub.PG2]
+
+config :cors_plug,
+ headers: [
+   "Authorization", "Content-Type", "Accept", "Origin",
+   "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
+   "Keep-Alive", "X-Requested-With", "If-Modified-Since",
+   "X-CSRF-Token", "X-Errors-User-Token"]
 
 # Configures Elixir's Logger
 config :logger, :console,

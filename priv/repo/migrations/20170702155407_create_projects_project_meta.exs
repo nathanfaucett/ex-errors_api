@@ -5,8 +5,9 @@ defmodule ErrorsApi.Repo.Migrations.CreateErrorsApi.Projects.ProjectMeta do
     create table(:projects_meta) do
 
       add :project_error_id, references(:projects_errors, on_delete: :nothing, null: false)
-      add :count, :integer, default: 0
-      add :meta, :string
+      add :count, :integer
+      add :occurred_at, :utc_datetime
+      add :meta, :map
 
       timestamps()
     end

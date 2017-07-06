@@ -14,12 +14,14 @@ defmodule ErrorsApi.Web.ProjectMetaView do
     %{id: project_meta.id,
       project_error_id: project_meta.project_error_id,
       count: project_meta.count,
+      occurred_at: project_meta.occurred_at,
       data: project_meta.meta}
   end
 
   def render("secure_project_meta.json", %{project_meta: project_meta}) do
     %{id: project_meta.id,
       count: project_meta.count,
+      occurred_at: project_meta.occurred_at,
       data: project_meta.meta}
   end
 end

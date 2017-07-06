@@ -7,21 +7,14 @@ config :errors_api, ErrorsApi.Web.Endpoint,
   server: false,
   frontend_origin: "http://localhost:8080"
 
-config :cors_plug,
-  headers: [
-    "Authorization", "Content-Type", "Accept", "Origin",
-    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
-    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
-    "X-CSRF-Token", "X-Errors-User-Token"]
-
 # Print only warnings and errors during test
 config :logger, level: :warn
 
 # Configure your database
 config :errors_api, ErrorsApi.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "dev",
-  password: "dev",
+  username: "postgres",
+  password: "postgres",
   database: "errors_api_test",
-  hostname: "localhost",
+  hostname: if(System.get_env("CI"), do: "postgres", else: "localhost"),
   pool: Ecto.Adapters.SQL.Sandbox

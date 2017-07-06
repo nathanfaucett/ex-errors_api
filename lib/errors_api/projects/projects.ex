@@ -204,7 +204,7 @@ defmodule ErrorsApi.Projects do
   ## Examples
 
       iex> create_or_get_project_error_and_meta(project_id, %{field: value})
-      {:ok, %ProjectError{}}
+      {:ok, is_new, %ProjectError{}}
 
       iex> create_or_get_project_error_and_meta(project_id, %{field: bad_value})
       {:error, nil}
@@ -216,9 +216,9 @@ defmodule ErrorsApi.Projects do
         case create_or_inc_project_meta(project_error, attrs) do
           {:ok, _project_meta} ->
             {:ok, is_new, Repo.preload(project_error, :meta)}
-          _ -> {:error, false, nil}
+          result -> result
         end
-    _ -> {:error, false, nil}
+      result -> result
     end
   end
 
@@ -237,21 +237,36 @@ defmodule ErrorsApi.Projects do
   def create_or_get_project_error(project_id, attrs \\ %{}) do
     name = Map.get(attrs, "name", Map.get(attrs, :name))
     stack_trace = Map.get(attrs, "stack_trace", Map.get(attrs, :stack_trace))
+    occurred_at = Map.get(attrs, "occurred_at", Map.get(attrs, :occurred_at))
 
     if name != nil and stack_trace != nil do
       case Repo.get_by(ProjectError, project_id: project_id, name: name, stack_trace: stack_trace) do
         nil ->
-          {status, value} = create_project_error(%{
+          case create_project_error(%{
             project_id: project_id,
             name: name,
+            count: 1,
+            occurred_at: occurred_at,
             stack_trace: stack_trace
-          })
-          {status, true, value}
-        {:ok, project_error} ->
-          {:ok, false, project_error}
+          }) do
+            {:ok, project_error} -> {:ok, true, project_error}
+            {:error, changeset} -> {:error, changeset}
+          end
+        project_error ->
+          case update_project_error(project_error, %{
+            count: project_error.count + 1
+          }) do
+            {:ok, project_error} -> {:ok, false, project_error}
+            {:error, changeset} -> {:error, changeset}
+          end
       end
     else
-      {:error, false, nil}
+      {:error, ProjectError.changeset(%ProjectError{}, %{
+        project_id: project_id,
+        name: name,
+        count: 1,
+        occurred_at: occurred_at,
+        stack_trace: stack_trace})}
     end
   end
 
@@ -371,24 +386,17 @@ defmodule ErrorsApi.Projects do
   def create_or_inc_project_meta(%ProjectError{} = project_error, attrs \\ %{}) do
     meta = Map.get(attrs, "meta", Map.get(attrs, :meta))
 
-    if meta != nil do
-      value = case Repo.get_by(ProjectMeta, project_error_id: project_error.id, meta: meta) do
-        nil -> create_project_meta(%{
+    case Repo.get_by(ProjectMeta, project_error_id: project_error.id, meta: meta) do
+      nil ->
+        create_project_meta(%{
           meta: meta,
-          project_error_id: project_error.id
-        })
-        project_meta -> project_meta
-      end
-
-      case value do
-        {:ok, project_meta} ->
-          project_meta
-          |> ProjectMeta.changeset(%{count: project_meta.count + 1})
-          |> Repo.update()
-        {:error, changeset} -> {:error, changeset}
-      end
-    else
-      {:error, nil}
+          count: 1,
+          occurred_at: Map.get(attrs, "occurred_at", Map.get(attrs, :occurred_at)),
+          project_error_id: project_error.id })
+      project_meta ->
+        project_meta
+        |> ProjectMeta.changeset(%{count: project_meta.count + 1})
+        |> Repo.update()
     end
   end
 

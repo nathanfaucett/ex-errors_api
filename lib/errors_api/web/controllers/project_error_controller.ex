@@ -15,18 +15,12 @@ defmodule ErrorsApi.Web.ProjectErrorController do
     project = conn.assigns[:current_project]
     project_id = project.id
 
-    case Projects.create_or_get_project_error_and_meta(project_id, project_error_params) do
-      {:ok, is_new, project_error} ->
-        Projects.project_error_request(project, project_error, is_new)
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", project_project_error_path(conn, :show, project_id, project_error))
-        |> render("show.json", project_error: project_error)
-
-      _ ->
-        conn
-        |> put_status(422)
-        |> render(ErrorsApi.Web.ErrorView, "422.json")
+    with {:ok, is_new, project_error} <- Projects.create_or_get_project_error_and_meta(project_id, project_error_params) do
+      Projects.project_error_request(project, project_error, is_new)
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", project_project_error_path(conn, :show, project_id, project_error))
+      |> render("show.json", project_error: project_error)
     end
   end
 

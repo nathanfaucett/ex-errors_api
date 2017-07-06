@@ -1,0 +1,20 @@
+image: elixir:1.4
+
+services:
+  - postgres:9.6
+
+variables:
+  MIX_ENV: "test"
+
+before_script:
+  # Setup phoenix dependencies
+  - apt-get update
+  - apt-get install -y postgresql-client
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get --only test
+  - mix ecto.reset
+
+test:
+  script:
+    - mix test

@@ -16,9 +16,9 @@ use Mix.Config
 
 # Configures the endpoint
 config :errors_api, ErrorsApi.Web.Endpoint,
-  url: [host: {:system, "HOST"}, port: {:system, "SSL_PORT"}],
+  url: [host: "localhost", port: 443],
   https: [:inet6,
-          port: {:system, "SSL_PORT"},
+          port: 443,
           otp_app: :errors_api,
           keyfile: "priv/keys/api.errors.hackertarian.com.key",
           certfile: "priv/keys/api.errors.hackertarian.com.cert"],
@@ -27,13 +27,6 @@ config :errors_api, ErrorsApi.Web.Endpoint,
   version: Mix.Project.config[:version],
   frontend_origin: "https://errors.hackertarian.com",
   on_init: {ErrorsApi.Web.Endpoint, :load_from_system_env, []}
-
-config :cors_plug,
-  headers: [
-    "Authorization", "Content-Type", "Accept", "Origin",
-    "User-Agent", "DNT","Cache-Control", "X-Mx-ReqToken",
-    "Keep-Alive", "X-Requested-With", "If-Modified-Since",
-    "X-CSRF-Token", "X-Errors-User-Token"]
 
 # Do not print debug messages in production
 config :logger, level: :info

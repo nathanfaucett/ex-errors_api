@@ -8,7 +8,7 @@ defmodule ErrorsApi.Web.ProjectControllerTest do
   alias ErrorsApi.Projects.Project
 
   @create_user_attrs %{email: "example@domain.com"}
-  
+
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
@@ -25,6 +25,7 @@ defmodule ErrorsApi.Web.ProjectControllerTest do
       user: user,
       conn: conn
         |> put_req_header(Config.app_get(:api_user_token_header), user.token)
+        |> put_req_header("accept-language", "en")
         |> put_req_header("accept", "application/json")}
   end
 

@@ -22,10 +22,11 @@ defmodule ErrorsApi.Web.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  IO.puts Config.app_get(:frontend_origin)
-
   # Cors
   plug CORSPlug, origin: [Config.app_get(:frontend_origin)]
+  # Locale and Region Detection
+  plug ErrorsApi.Web.Plugs.UserLocale
+
   plug ErrorsApi.Web.Router
 
   @doc """

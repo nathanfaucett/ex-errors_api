@@ -90,8 +90,8 @@ defmodule ErrorsApi.ProjectsTest do
   describe "errors" do
     alias ErrorsApi.Projects.ProjectError
 
-    @valid_attrs %{name: "some name", stack_trace: "some stack_trace"}
-    @invalid_attrs %{name: nil, stack_trace: nil}
+    @valid_attrs %{name: "some name", count: 1, occurred_at: DateTime.utc_now, stack_trace: "some stack_trace"}
+    @invalid_attrs %{name: nil, date_time: nil, stack_trace: nil}
 
     setup do
       user = user_fixture()
